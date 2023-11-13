@@ -4,7 +4,7 @@ import { Breadcrumb } from 'flowbite-react';
 import { HiHome } from 'react-icons/hi';
 import { usePathname } from 'next/navigation';
 
-export default () => {
+export default function Component() {
     // get the current url using next/navigation
     const url = usePathname();
     console.log(url)

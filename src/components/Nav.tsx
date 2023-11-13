@@ -35,12 +35,15 @@ export default function Component() {
         home = true
     }
 
+    // make hm a hashmap of the url and the name of the button
+    // add its proper types
     let hm = {
         "/": "Home",
         "/about": "About",
         "/market": "Market",
         "/trade": "Trade",
-    }
+    } as { [key: string]: string }
+
 
     return (
         <Navbar fluid className='bg-primary-eerie_black'>
@@ -101,7 +104,7 @@ export default function Component() {
                                                 Lost Password?
                                             </a>
                                         </div>
-                                        <div className="w-full">
+                                        <div className="w-full grid gap-3 p-4">
                                             <button className='rounded-md px-5 py-2 text-white hover:text-black hover:bg-white border-primary-olivine border bg-primary-olivine border-primary-olivine-100  hover:text-primary-eerie_black' onClick={login}>Log in to your account</button>
                                         </div>
                                         <div>
