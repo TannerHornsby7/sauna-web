@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Nav from '@/components/Nav' 
-import BreadCrumb from '@/components/BreadCrumb'
-import Foot from '@/components/Footer'
-import {bg_img} from '@/util/assets'
+import Nav from '@/ui/Nav' 
+import BreadCrumb from '@/ui/BreadCrumb'
+import Foot from '@/ui/Footer'
+import {bg_img} from '@/lib/assets'
 
 const inter = Inter({ subsets: ['latin'] })
 

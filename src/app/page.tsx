@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import Nav from '@/components/Nav'
-import Hero from '@/components/Hero'
-import Numbers from '@/components/Numbers'
+import Nav from '@/ui/Nav'
+import Hero from '@/ui/Hero'
+import Numbers from '@/ui/Numbers'
 
 export default function Home() {
   return (
