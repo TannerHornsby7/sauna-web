@@ -76,6 +76,17 @@ export async function fetchAssetPages(query: string) {
     }
 }
 
+// add an asset to favorites list for user
+export async function addAssetToFavorites(userId: string, assetId: string) {
+    try {
+        const data = await sql`INSERT INTO favorites (user_id, asset_id) VALUES (${userId}, ${assetId})`;
+        return data;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to add asset to favorites.');
+    }
+}
+
 
 // // export async function fetchRevenue() {
 // //     // Add noStore() here prevent the response from being cached.

@@ -34,6 +34,14 @@ export const formatDateToLocal = (
 //   return { yAxisLabels, topLabel };
 // };
 
+export const toUrlSlug = (name: string) => {
+    return name.replace(/\s+/g, '-');
+}
+
+export const fromUrlSlug = (slug: string) => {
+    return slug.replace(/-/g, ' ');
+}
+
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
   // display all pages without any ellipsis.

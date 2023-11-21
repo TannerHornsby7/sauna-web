@@ -5,6 +5,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { Card } from 'flowbite-react';
 import Link from 'next/link';
+import { toUrlSlug } from '@/lib/utils';
 
 export default function Component({ name, image_url, price }: { name: string, image_url: string, price: number }) {
 
@@ -22,7 +23,7 @@ export default function Component({ name, image_url, price }: { name: string, im
       </div>
       <div className="h-min flex items-center justify-between">
         <Link
-          href="#"
+          href={`/market/${toUrlSlug(name)}`}
           className='-mt-4 text-primary-ebony-300 hover:text-primary-olivine grid place-items-center w-full rounded-lg bg-primary-ebony-200 hover:bg-primary-ebony-200 px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4'
         >
           <ShoppingCartIcon className="w-6" />

@@ -1,5 +1,6 @@
 // create an assets table that is async an pull data from the api
-import MarketCard from "@/ui/market/Card";
+import '@/ui/styles.css';
+import MarketCard from "@/ui/market/MCard";
 import { fetchFilteredAssets } from "@/lib/data";
 
 export default async function AssetsTable({
@@ -11,9 +12,9 @@ export default async function AssetsTable({
   }) {
     const assets = await fetchFilteredAssets(query, currentPage);
     return (
-      <div className="w-full place-items-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 grid-flow-row">
+      <div className="w-full gap-1 p-2 place-items-center grid flowgrid">
         {assets.map((asset) => (
-          <MarketCard key={asset.id} name={asset.name} price={asset.price} image_url={asset.image_url} />
+          <MarketCard key={asset.id} name={asset.name} price={asset.price} image_url={asset.image_url} favorite={false} />
         ))}
       </div>
     );

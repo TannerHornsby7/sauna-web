@@ -7,11 +7,16 @@ import { lusitana } from '@/ui/fonts';
 import { ListingsTableSkeleton } from '@/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchAssetPages } from '@/lib/data';
+import SortDial from '@/ui/market/SortDial';
 import {
     ArrowLeftIcon,
     ArrowRightIcon,
     MagnifyingGlassCircleIcon,
+    PowerIcon,
+    HeartIcon,
 } from '@heroicons/react/24/outline';
+import DropDown from '@/ui/DropDown';
+import '@/ui/styles.css';
 
 // set the metadata
 export const metadata = {
@@ -32,8 +37,17 @@ export default async function Page({
     const totalPages = await fetchAssetPages(query);
     return (
         <div className="w-full p-4 -mt-4">
-            <div className="mt-4 flex items-center justify-between md:mt-8">
-                <Search placeholder="Search assets..." />
+            <div className="mt-4 flex md:mt-8">
+                <div className="grid grid-cols-5 place-items-center">
+                    <div className='flex justify-center text-primary-ebony-500'>
+                        <PowerIcon className="mx-2 h-5 w-5 text-primary-olivine" />
+                        |
+                        <HeartIcon className="mx-2 h-5 w-5 text-primary-olivine" />
+                    </div>
+                    <Search placeholder="Search assets..." />
+                    <DropDown />
+                </div>
+                {/* add a cart that keeps track of added items */}
             </div>
             <Suspense key={query + currentPage} fallback={<ListingsTableSkeleton />}>
                 <Table query={query} currentPage={currentPage} />
