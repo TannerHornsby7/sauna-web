@@ -45,7 +45,6 @@ export default function Component() {
         "/": "Home",
         "/about": "About",
         "/market": "Market",
-        "/trade": "Trade",
     } as { [key: string]: string }
 
     let home = false

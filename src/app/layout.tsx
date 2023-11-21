@@ -1,17 +1,21 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Nav from '@/ui/Nav' 
+import Nav from '@/ui/Nav'
 import BreadCrumb from '@/ui/BreadCrumb'
 import Foot from '@/ui/Footer'
-import {bg_img} from '@/lib/assets'
+import { bg_img } from '@/lib/assets'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Sauna',
+  title: {
+    template: '%s | Sauna',
+    default: 'Sauna'
+  },
   description: 'Unbox the future of Steam Markets.',
-}
+  metadataBase: new URL('https://agar.io'),
+};
 
 export default function RootLayout({
   children,
@@ -27,12 +31,12 @@ export default function RootLayout({
   }
   return (
     <html lang="en">
-      <body className={inter.className} style={backgroundStyle}>
+      <body className={`flex flex-col ` + inter.className} style={backgroundStyle}>
         <Nav />
         <BreadCrumb />
         {children}
         <Foot />
-        </body>
+      </body>
     </html>
   )
 }
