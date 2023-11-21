@@ -30,17 +30,19 @@ export default async function Page({
     searchParams?: {
         query?: string;
         page?: string;
+        sort?: string;
     };
 }) {
     const query = searchParams?.query || '';
     const currentPage = Number(searchParams?.page) || 1;
     const totalPages = await fetchAssetPages(query);
+    const sort = searchParams?.sort || '';
     return (
         <div className="w-full p-4 -mt-4">
             <div className="mt-4 flex md:mt-8">
-                <div className="grid grid-cols-5 place-items-center">
+                <div className="flex place-items-center">
                     <div className='flex justify-center text-primary-ebony-500'>
-                        <PowerIcon className="mx-2 h-5 w-5 text-primary-olivine" />
+                        <PowerIcon className="mr-2 h-5 w-5 text-primary-olivine" />
                         |
                         <HeartIcon className="mx-2 h-5 w-5 text-primary-olivine" />
                     </div>
@@ -50,7 +52,7 @@ export default async function Page({
                 {/* add a cart that keeps track of added items */}
             </div>
             <Suspense key={query + currentPage} fallback={<ListingsTableSkeleton />}>
-                <Table query={query} currentPage={currentPage} />
+                <Table query={query} currentPage={currentPage} sort={sort} />
             </Suspense>
             <div className="mt-5 flex w-full justify-center">
                 <Pagination totalPages={totalPages} />

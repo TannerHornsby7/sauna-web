@@ -1,6 +1,8 @@
 'use client'
 // components/Dropdown.js or Dropdown.tsx
 import React, { ReactComponentElement, useState } from 'react';
+// include the required stuff from next/navigation to modify the current query
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 interface SortObject {
   name: string;
@@ -49,12 +51,12 @@ while (sorts) {
   format_sorts.push({
     name: sort.name,
     icon: sort.icon,
-    dir: 'ArrowTrendingUpIcon'
+    dir: 'up'
   })
   format_sorts.push({
     name: sort.name,
     icon: sort.icon,
-    dir: 'ArrowTrendingDownIcon'
+    dir: 'down'
   })
 }
 
@@ -68,8 +70,11 @@ format_sorts.push({
   dir: 'None'
 })
 
+export default function DropDown() {
+  const searchParams = useSearchParams();
+  const { replace } = useRouter();
+  const pathname = usePathname();
 
-const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState('Default');
   const [sortDir, setSortDir] = useState('None');
@@ -77,6 +82,15 @@ const Dropdown = () => {
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const updateSort = (sort: SortObject) => () => {
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.set('page', '1');
+    if (sort.name !== 'Default') {
+      newParams.set('sort', (sort.dir === 'up' ? sort.name.toLowerCase() + '.asc' : sort.name.toLowerCase() + '.desc'));
+    } else {
+      newParams.delete('sort');
+    }
+    replace(`${pathname}?${newParams.toString()}`);
+    setIsOpen(false);
     console.log(sort)
     setSort(sort.name);
     setSortDir(sort.dir);
@@ -84,7 +98,7 @@ const Dropdown = () => {
 
   return (
     <div
-      className='bg-primary-eerie_black h-9 p-3 pt-1 border border-primary-olivine'
+      className='text-sm grid place-content-center bg-primary-eerie_black h-10 p-2 border border-primary-olivine col-span-2'
       style={{ position: 'relative' }}>
       <button onClick={toggleDropdown}>
         <div className='flex flex-row justify-center items-center text-primary-olivine'>
@@ -93,8 +107,8 @@ const Dropdown = () => {
             isOpen ? <ChevronUpIcon className='h-5 w-5' /> : <ChevronDownIcon className='h-5 w-5' />
           }
           <span className=''>{sort}</span>
-          {sortDir == 'ArrowTrendingUpIcon' && <ArrowUpIcon className="h-5 w-5 ml-2" />}
-          {sortDir == 'ArrowTrendingDownIcon' && <ArrowDownIcon className="h-5 w-5 ml-2" />}
+          {sortDir == 'up' && <ArrowUpIcon className="h-5 w-5 ml-2" />}
+          {sortDir == 'down' && <ArrowDownIcon className="h-5 w-5 ml-2" />}
 
         </div>
       </button>
@@ -130,13 +144,11 @@ const Dropdown = () => {
                 {s.icon === 'CalculatorIcon' && <CalculatorIcon className="h-5 w-5 mr-2" />}
                 {s.icon === 'CalendarIcon' && <CalendarIcon className="h-5 w-5 mr-2" />}
                 <span>{s.name}</span>
-                {s.dir === 'ArrowTrendingUpIcon' && <ArrowTrendingUpIcon className="h-5 w-5 ml-2" />}
-                {s.dir === 'ArrowTrendingDownIcon' && <ArrowTrendingDownIcon className="h-5 w-5 ml-2" />}
+                {s.dir === 'up' && <ArrowTrendingUpIcon className="h-5 w-5 ml-2" />}
+                {s.dir === 'down' && <ArrowTrendingDownIcon className="h-5 w-5 ml-2" />}
               </button>
             ))}
         </div>)}
     </div>);
 
 }
-
-export default Dropdown;

@@ -30,26 +30,35 @@ const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredAssets(
     query: string,
     currentPage: number,
+    sort: string,
 ) {
     noStore();
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
+    console.log('query', query);
+    console.log('sort', sort);
+    // split sort by period, first is column, second is order
+    const sortSplit = sort.split('.');
+    
     try {
-        const assets = await sql<AssetTable>`
+      const assets = await sql<AssetTable>`
         SELECT
-          id,
-          name,
-          tags,
-          image_url,
-          price
+            id,
+            name,
+            tags,
+            image_url,
+            price
         FROM assets
         WHERE
-          name ILIKE ${`%${query}%`} OR
-          tags ILIKE ${`%${query}%`}
-        ORDER BY name ASC
+            name ILIKE ${`%${query}%`} OR
+            tags ILIKE ${`%${query}%`}
+        ORDER BY ${`${sortSplit[0]} ${sortSplit[1]?.toUpperCase()}`}
         LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-      `;
-
+        `;
+        // we are stuck on 54
+        // TICKET
+        // it orders correctly when we write it in the query, but not when we use the variable
+        // we need to figure out how to pass in the variable correctly
+        // we also need to figure out how to pass in the order correctly
         return assets.rows;
     } catch (error) {
         console.error('Database Error:', error);

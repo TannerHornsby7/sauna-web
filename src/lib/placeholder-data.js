@@ -29,7 +29,7 @@ const assets = [
         tags: 'csgo|case|container',
         image_url: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQwnfCcJmxDv9rhwIHZwqP3a-uGwz9Xv8F0j-qQrI3xiVLkrxVuZW-mJoWLMlhpWhFkc9M/360fx360f',
         // make the price a random formatted string
-        price: 29.00
+        price: 1.27
     },
     {
         id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
@@ -37,7 +37,7 @@ const assets = [
         tags: 'csgo|case|container',
         image_url: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFAuhqSaKWtEu43mxtbbk6b1a77Twm4Iu8Yl3bCU9Imii1Xt80M5MmD7JZjVLFH-6VnQJQ/360fx360f',
         // make the price a random formatted string
-        price: 29.00
+        price: 2.01
     },
     {
         id: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
@@ -45,7 +45,7 @@ const assets = [
         tags: 'tf2|key',
         image_url: 'https://community.cloudflare.steamstatic.com/economy/image/fWFc82js0fmoRAP-qOIPu5THSWqfSmTELLqcUywGkijVjZULUrsm1j-9xgEAaR4uURrwvz0N252yVaDVWrRTno9m4ccG2GNqxlQoZrC2aG9hcVGUWflbX_drrVu5UGki5sAij6tOtQ/360fx360f',
         // make the price a random formatted string
-        price: 29.00
+        price: 0.52
     },
     {
         id: '50ca3e18-62cd-11ee-8c99-0242ac120002',
@@ -53,7 +53,7 @@ const assets = [
         tags: 'csgo|case|container',
         image_url: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsVFx5KAVo5PSkKV4xhfGfKTgVvIXlxNPSwaOmMLiGwzgJvJMniO-Zoo_z2wXg-EVvfSmtc78HsNoy/360fx360f',
         // make the price a random formatted string
-        price: 29.00
+        price: 0.80
     },
     {
         id: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
@@ -61,7 +61,7 @@ const assets = [
         tags: 'csgo|case|container',
         image_url: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQynaHMJT9B74-ywtjYxfOmMe_Vx28AucQj3brAoYrz3Fay_kY4MG_wdYeLMlhpLMaM-1U/360fx360f',
         // make the price a random formatted string
-        price: 29.00
+        price: 3.26
     },
     {
         id: '76d65c26-f784-44a2-ac19-586678f7c2f2',
@@ -69,7 +69,7 @@ const assets = [
         tags: 'csgo|case|container',
         image_url: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFYynaSdJGhE74y0wNWIw_OlNuvXkDpSuZQmi--SrN-h3gey-Uo6YWmlIoCLMlhplhFFvwI/360fx360f',
         // make the price a random formatted string
-        price: 29.00
+        price: 7.79
     },
 ];
 
