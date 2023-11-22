@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {}
 
-// add community.cloudflare.steamstatic.com to list of image domains
 nextConfig.images = {
-  domains: ['community.cloudflare.steamstatic.com'],
+  domains: ['community.cloudflare.steamstatic.com', 'community.akamai.steamstatic.com', 'i.imgur.com'],
 }
 
 module.exports = nextConfig

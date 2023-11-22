@@ -1,190 +1,89 @@
-const { db } = require('@vercel/postgres');
-const {
-    receipts,
-    assets,
-    price_history,
-    users,
-} = require('../src/lib/placeholder-data.js');
-const bcrypt = require('bcrypt');
-const { randomUUID } = require('crypto');
+const Chance = require('chance')
+const bcrypt = require('bcrypt')
+// library for getting the current day
+const NUM_USERS = 10
+const NUM_TRANSACTIONS = 100
+// eventually we will import this from another file
+const cs_assets = [{"name": "Revolution Case", "avg_price": 0.76, "avg_vol": "2722", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQynaHMJT9B74-ywtjYxfOmMe_Vx28AucQj3brAoYrz3Fay_kY4MG_wdYeLMlhpLMaM-1U/360fx360f"}, {"name": "Recoil Case", "avg_price": 0.329, "avg_vol": "2884", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQxnaecIT8Wv9rilYTYkfTyNuiFwmhUvpZz3-2Z9oqg0Vew80NvZzuiJdeLMlhpwFO-XdA/360fx360f"}, {"name": "Dreams & Nightmares Case", "avg_price": 1.18, "avg_vol": "3728", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQwnfCcJmxDv9rhwIHZwqP3a-uGwz9Xv8F0j-qQrI3xiVLkrxVuZW-mJoWLMlhpWhFkc9M/360fx360f"}, {"name": "Snakebite Case", "avg_price": 0.296, "avg_vol": "6381", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU4naLOJzgUuYqyzIaIxa6jMOLXxGkHvcMjibmU99Sg3Qaw-hA_ZWrzLISLMlhpgJJUhGE/360fx360f"}, {"name": "Fracture Case", "avg_price": 0.533, "avg_vol": "4176", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU2nfGaJG0btN2wwYHfxa-hY-uFxj4Dv50nj7uXpI7w3AewrhBpMWH6d9CLMlhpEbAe-Zk/360fx360f"}, {"name": "Clutch Case", "avg_price": 0.65, "avg_vol": "2189", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFY5naqQIz4R7Yjix9bZkvKiZrmAzzlTu5AoibiT8d_x21Wy8hY_MWz1doSLMlhpM3FKbNs/360fx360f"}, {"name": "Prisma 2 Case", "avg_price": 0.83, "avg_vol": "929", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU1nfbOIj8W7oWzkYLdlPOsMOmIk2kGscAj2erE99Sn2AGw_0M4NW2hIYOLMlhpcmY0CRM/360fx360f"}, {"name": "CS20 Case", "avg_price": 0.76, "avg_vol": "111", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU0naHKIj9D7oTgl4LelaGnMuqIwDgFusR337HCpYmhiwzm8ktqMjv2INKLMlhprbp6CTE/360fx360f"}, {"name": "Prisma Case", "avg_price": 0.78, "avg_vol": "527", "src_img": "https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFUynfWaI25G6Ijkl9iPw_SnNrjXw2oBu8cj3b2Qo4_33QbnrUdlYD37ddCLMlhpvs0XIz0/360fx360f"}];
 
-async function seedUsers(client) {
-    // log the authorization status of the user on the client
-    try {
-        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-        // Create the "users" table if it doesn't exist
-        const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
-      );
-    `;
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
+var chance = new Chance()
 
-        console.log(`Created "users" table`);
-
-        // Insert data into the "users" table
-        const insertedUsers = await Promise.all(
-            users.map(async (user) => {
-                const hashedPassword = await bcrypt.hash(user.password, 10);
-                return client.sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
-        ON CONFLICT (id) DO NOTHING;
-      `;
-            }),
-        );
-
-        console.log(`Seeded ${insertedUsers.length} users`);
-
-        return {
-            createTable,
-            users: insertedUsers,
-        };
-    } catch (error) {
-        console.error('Error seeding users:', error);
-        throw error;
-    }
+async function seedTransactions() {
+    return 'hello'
 }
 
-async function seedReceipts(client) {
-    try {
-        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-        // Create the "receipts" table if it doesn't exist
-        const createTable = await client.sql`
-    CREATE TABLE IF NOT EXISTS receipts (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    asset_id UUID NOT NULL,
-    amount INT NOT NULL,
-    price FLOAT NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    date DATE NOT NULL,
-    sender UUID NOT NULL,
-    receiver UUID NOT NULL);
-`;
-        console.log(`Created "receipts" table`);
-
-        // Insert data into the "receipts" table
-        const insertedReceipts = await Promise.all(
-            receipts.map(
-                (receipt) => client.sql`
-        INSERT INTO receipts (id, asset_id, amount, price, status, date, sender, receiver)
-        VALUES (${randomUUID()}, ${receipt.asset_id}, ${receipt.amount}, ${receipt.price}, ${receipt.status}, ${receipt.date}, ${receipt.sender}, ${receipt.receiver})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-            ),
-        );
-
-        console.log(`Seeded ${insertedReceipts.length} receipts`);
-
-        return {
-            createTable,
-            receipts: insertedReceipts,
-        };
-    } catch (error) {
-        console.error('Error seeding receipts:', error);
-        throw error;
+async function seedAssets() {
+    // use the cs_assets.json file to seed the database
+    let assets = []
+    for (let i = 0; i < cs_assets.length; i++) {
+        let asset = cs_assets[i]
+        assets.push({
+            name: asset.name,
+            tags: chance.pickset(['popular', 'rare', 'new'], 1)[0],
+            desc: chance.sentence(),
+            image: asset.src_img,
+            steam_id: chance.integer({ min: 10**4, max: 10**5 }).toString(),
+            avg_price: asset.avg_price,
+            avg_vol: Number(asset.avg_vol),
+            fungible: asset.name.includes('Case') ? true : false,
+            book_id: chance.integer({ min: 1, max: 10**9 }),
+        })
     }
+    return prisma.asset.createMany({
+        data: assets,
+    })
 }
 
-async function seedAssets(client) {
-    try {
-        await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
-        // Create the "assets" table if it doesn't exist
-        const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS assets (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        tags VARCHAR(255) NOT NULL,
-        image_url VARCHAR(255) NOT NULL,
-        price FLOAT NOT NULL
-      );
-    `;
-
-        console.log(`Created "assets" table`);
-
-        // Insert data into the "assets" table
-        const insertedAssets = await Promise.all(
-            assets.map(
-                (asset) => client.sql`
-        INSERT INTO assets (id, name, tags, image_url, price)
-        VALUES (${asset.id}, ${asset.name}, ${asset.tags}, ${asset.image_url}, ${asset.price})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-            ),
-        );
-
-        console.log(`Seeded ${insertedAssets.length} assets`);
-
-        return {
-            createTable,
-            assets: insertedAssets,
-        };
-    } catch (error) {
-        console.error('Error seeding assets:', error);
-        throw error;
+async function seedUsers() {
+    const users = []
+    const password = await bcrypt.hash('password', 10)
+    for (let i = 0; i < NUM_USERS; i++) {
+        users.push({
+            email: chance.email(),
+            name: chance.name(),
+            phash: password,
+            createdAt: new Date(),
+            profpic: 'https://i.imgur.com/4M34hi2.png',
+            trade_url: chance.url(),
+        })
     }
+    return prisma.user.createMany({
+        data: users,
+    })
 }
 
-async function seedPriceHistory(client) {
-    try {
-        // Create the "price_history" table if it doesn't exist
-        const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS price_history (
-        month VARCHAR(4) NOT NULL UNIQUE,
-        price INT NOT NULL
-      );
-    `;
-
-        console.log(`Created "price_history" table`);
-
-        // Insert data into the "price_history" table
-        const insertedPriceHistory = await Promise.all(
-            price_history.map(
-                (rev) => client.sql`
-        INSERT INTO price_history (month, price)
-        VALUES (${rev.month}, ${rev.price})
-        ON CONFLICT (month) DO NOTHING;
-      `,
-            ),
-        );
-
-        console.log(`Seeded ${insertedPriceHistory.length} price_history`);
-
-        return {
-            createTable,
-            price_history: insertedPriceHistory,
-        };
-    } catch (error) {
-        console.error('Error seeding price_history:', error);
-        throw error;
+async function seedTransactions() {
+    const transactions = []
+    for (let i = 0; i < NUM_TRANSACTIONS; i++) {
+        transactions.push({
+            price: chance.floating({ min: 0, max: 3, fixed: 2 }),
+            amount: chance.integer({ min: 1, max: 1000 }),
+            asset_id: chance.integer({ min: 1, max: 10 }).toString(),
+            seller_id: chance.integer({ min: 1, max: NUM_USERS }).toString(),
+            buyer_id: chance.integer({ min: 1, max: NUM_USERS }).toString(),
+            status: chance.pickone(['pending', 'completed']),
+            createdAt: new Date(),
+        })
     }
+    return prisma.transaction.createMany({
+        data: transactions,
+    })
 }
 
 async function main() {
-    const client = await db.connect();
-    // try creating a test table  
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    await client.sql`
-        CREATE TABLE IF NOT EXISTS test (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL
-        );
-    `;
-    await seedUsers(client);
-    await seedAssets(client);
-    await seedReceipts(client);
-    await seedPriceHistory(client);
-
-    await client.end();
+  const response = await seedUsers()
+  const response2 = await seedTransactions()
+  const response3 = await seedAssets()
+  console.log(response, response2, response3)
 }
-
-main().catch((err) => {
-    console.error(
-        'An error occurred while attempting to seed the database:',
-        err,
-    );
-});
+main()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })

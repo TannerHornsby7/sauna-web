@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+ 
+datasource db {
+  provider = "mongodb"
+  url = env("MONGODB_URI") // uses connection pooling
+  //directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+ 
+model User {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  email       String   @unique
+  phash       String
+  profpic     String
+  createdAt DateTime   @default(now())
+  trade_url   String
+}
+
+model Asset {
+    id     String        @id @default(auto()) @map("_id") @db.ObjectId
+    name   String
+    tags   String
+    desc   String
+    image  String
+    steam_id String
+    avg_price Float
+    avg_vol Int
+    fungible Boolean
+    book_id Int
+}
+
+model Transaction {
+    id         String @id @default(auto()) @map("_id") @db.ObjectId
+    price      Float
+    amount     Int
+    asset_id   String @unique
+    seller_id  String @unique
+    buyer_id   String @unique
+    status     String
+    createdAt  DateTime  @default(now())
+}
