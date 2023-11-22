@@ -75,9 +75,26 @@ export default function DropDown() {
   const { replace } = useRouter();
   const pathname = usePathname();
 
+  // get the sort if any from the query
+  const url_sort = searchParams.get('sort')?.toString() ?? '';
+  let sort_word = url_sort.split('.')[0]
+  let sort_dir = url_sort.split('.')[1]
+  if (sort_dir) {
+    sort_dir = sort_dir == 'asc' ? 'up' : 'down';
+  } else {
+    sort_dir = 'None';
+  }
+
+  // capitalize sort_word
+  if (sort_word) {
+    sort_word = sort_word.charAt(0).toUpperCase() + sort_word.slice(1);
+  } else {
+    sort_word = 'Default';
+  }
+
   const [isOpen, setIsOpen] = useState(false);
-  const [sort, setSort] = useState('Default');
-  const [sortDir, setSortDir] = useState('None');
+  const [sort, setSort] = useState(sort_word);
+  const [sortDir, setSortDir] = useState(sort_dir);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 

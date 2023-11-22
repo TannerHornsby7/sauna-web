@@ -1,27 +1,37 @@
 // needs to be implemented
-import { sql } from '@vercel/postgres';
-import {
-    User,
-    Asset,
-    Receipt,
-    PriceHistory,
-    LatestReceipt,
-    LatestReceiptRaw,
-    ReceiptsTable,
-    AssetTable,
-} from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
+import { PrismaClient } from '@prisma/client';
+// import the list of assets from the JSON file
+
+const queryToORM: {
+    [key: string]: string;
+} = {
+    'price': 'avg_price',
+}
+
+const prisma = new PrismaClient();
+
+// export default async function prismaExample() {
+//   const newUser = await prisma.user.create({
+//     data: {
+//       name: 'Elliott',
+//       email: 'xelliottx@example-user.com',
+//     },
+//   });
+
+//   const users = await prisma.user.findMany();
+// }
 
 // fetch all assets
 export async function fetchAssets() {
+    noStore();
     try {
-        const data = await sql<AssetTable>`SELECT * FROM assets`;
-        const assets = data.rows;
+        const assets = prisma.asset.findMany();
         return assets;
     } catch (error) {
         console.error('Database Error:', error);
-        throw new Error('Failed to fetch all assets.');
+        throw new Error('Failed to fetch assets.');
     }
 }
 
@@ -33,51 +43,67 @@ export async function fetchFilteredAssets(
     sort: string,
 ) {
     noStore();
-    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-    console.log('query', query);
-    console.log('sort', sort);
-    // split sort by period, first is column, second is order
-    const sortSplit = sort.split('.');
-    
+    let sortColumn = 'name';
+    let sortOrder = 'asc';
+
+    if (sort) {
+        sortColumn = queryToORM[sort.split('.')[0].toLowerCase() || 'price'];
+        sortOrder = sort.split('.')[1].toLowerCase();
+    }
     try {
-      const assets = await sql<AssetTable>`
-        SELECT
-            id,
-            name,
-            tags,
-            image_url,
-            price
-        FROM assets
-        WHERE
-            name ILIKE ${`%${query}%`} OR
-            tags ILIKE ${`%${query}%`}
-        ORDER BY ${`${sortSplit[0]} ${sortSplit[1]?.toUpperCase()}`}
-        LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-        `;
-        // we are stuck on 54
-        // TICKET
-        // it orders correctly when we write it in the query, but not when we use the variable
-        // we need to figure out how to pass in the variable correctly
-        // we also need to figure out how to pass in the order correctly
-        return assets.rows;
-    } catch (error) {
+        const assets = prisma.asset.findMany({
+            where: {
+                OR: [
+                    {
+                        name: {
+                            contains: query,
+                        },
+                    },
+                    {
+                        tags: {
+                            contains: query,
+                        },
+                    },
+                ],
+            },
+            skip: ITEMS_PER_PAGE * (currentPage - 1),
+            take: ITEMS_PER_PAGE,
+            orderBy: {
+                [sortColumn]: sortOrder,
+            },
+        });
+        return assets;
+    }
+    catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch assets.');
+
     }
 }
 
 // fetch pages for assets
 export async function fetchAssetPages(query: string) {
     noStore();
+    // get the count of pages for assets
     try {
-        const count = await sql`SELECT COUNT(*)
-      FROM assets
-      WHERE
-        name ILIKE ${`%${query}%`} OR
-        tags ILIKE ${`%${query}%`}
-    `;
+        const count = await prisma.asset.count({
+            where: {
+                OR: [
+                    {
+                        name: {
+                            contains: query,
+                        },
+                    },
+                    {
+                        tags: {
+                            contains: query,
+                        },
+                    },
+                ],
+            },
+        });
 
-        const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+        const totalPages = Math.ceil(Number(count) / ITEMS_PER_PAGE);
         return totalPages;
     } catch (error) {
         console.error('Database Error:', error);
@@ -86,243 +112,12 @@ export async function fetchAssetPages(query: string) {
 }
 
 // add an asset to favorites list for user
-export async function addAssetToFavorites(userId: string, assetId: string) {
-    try {
-        const data = await sql`INSERT INTO favorites (user_id, asset_id) VALUES (${userId}, ${assetId})`;
-        return data;
-    } catch (error) {
-        console.error('Database Error:', error);
-        throw new Error('Failed to add asset to favorites.');
-    }
-}
-
-
-// // export async function fetchRevenue() {
-// //     // Add noStore() here prevent the response from being cached.
-// //     // This is equivalent to in fetch(..., {cache: 'no-store'}).
-// //     noStore();
-
-// //     try {
-// //         // Artificially delay a reponse for demo purposes.
-// //         // Don't do this in real life :)
-
-// //         console.log('Fetching revenue data...');
-// //         await new Promise((resolve) => setTimeout(resolve, 3000));
-
-// //         const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-// //         // console.log('Data fetch complete after 3 seconds.');
-
-// //         return data.rows;
-// //     } catch (error) {
-// //         console.error('Database Error:', error);
-// //         throw new Error('Failed to fetch revenue data.');
-// //     }
-// // }
-
-// export async function fetchLatestInvoices() {
-//     noStore();
-
-//     // Artificially delay a reponse for demo purposes.
-//     // Don't do this in real life :)
-//     await new Promise((resolve) => setTimeout(resolve, 3000));
+// export async function addAssetToFavorites(userId: string, assetId: string) {
 //     try {
-//         const data = await sql<LatestInvoiceRaw>`
-//         SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-//         FROM invoices
-//         JOIN customers ON invoices.customer_id = customers.id
-//         ORDER BY invoices.date DESC
-//         LIMIT 5`;
-
-//         const latestInvoices = data.rows.map((invoice) => ({
-//             ...invoice,
-//             amount: formatCurrency(invoice.amount),
-//         }));
-//         return latestInvoices;
+//         const data = await sql`INSERT INTO favorites (user_id, asset_id) VALUES (${userId}, ${assetId})`;
+//         return data;
 //     } catch (error) {
 //         console.error('Database Error:', error);
-//         throw new Error('Failed to fetch the latest invoices.');
-//     }
-// }
-
-// export async function fetchCardData() {
-//     noStore();
-//     try {
-//         // You can probably combine these into a single SQL query
-//         // However, we are intentionally splitting them to demonstrate
-//         // how to initialize multiple queries in parallel with JS.
-//         const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-//         const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-//         const invoiceStatusPromise = sql`SELECT
-//            SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-//            SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-//            FROM invoices`;
-
-//         const data = await Promise.all([
-//             invoiceCountPromise,
-//             customerCountPromise,
-//             invoiceStatusPromise,
-//         ]);
-
-//         const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
-//         const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-//         const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-//         const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
-
-//         return {
-//             numberOfCustomers,
-//             numberOfInvoices,
-//             totalPaidInvoices,
-//             totalPendingInvoices,
-//         };
-//     } catch (error) {
-//         console.error('Database Error:', error);
-//         throw new Error('Failed to card data.');
-//     }
-// }
-
-// const ITEMS_PER_PAGE = 6;
-// export async function fetchFilteredInvoices(
-//     query: string,
-//     currentPage: number,
-// ) {
-//     noStore();
-//     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-//     try {
-//         const invoices = await sql<InvoicesTable>`
-//         SELECT
-//           invoices.id,
-//           invoices.amount,
-//           invoices.date,
-//           invoices.status,
-//           customers.name,
-//           customers.email,
-//           customers.image_url
-//         FROM invoices
-//         JOIN customers ON invoices.customer_id = customers.id
-//         WHERE
-//           customers.name ILIKE ${`%${query}%`} OR
-//           customers.email ILIKE ${`%${query}%`} OR
-//           invoices.amount::text ILIKE ${`%${query}%`} OR
-//           invoices.date::text ILIKE ${`%${query}%`} OR
-//           invoices.status ILIKE ${`%${query}%`}
-//         ORDER BY invoices.date DESC
-//         LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-//       `;
-
-//         return invoices.rows;
-//     } catch (error) {
-//         console.error('Database Error:', error);
-//         throw new Error('Failed to fetch invoices.');
-//     }
-// }
-
-// export async function fetchInvoicesPages(query: string) {
-//     noStore();
-//     try {
-//         const count = await sql`SELECT COUNT(*)
-//       FROM invoices
-//       JOIN customers ON invoices.customer_id = customers.id
-//       WHERE
-//         customers.name ILIKE ${`%${query}%`} OR
-//         customers.email ILIKE ${`%${query}%`} OR
-//         invoices.amount::text ILIKE ${`%${query}%`} OR
-//         invoices.date::text ILIKE ${`%${query}%`} OR
-//         invoices.status ILIKE ${`%${query}%`}
-//     `;
-
-//         const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-//         return totalPages;
-//     } catch (error) {
-//         console.error('Database Error:', error);
-//         throw new Error('Failed to fetch total number of invoices.');
-//     }
-// }
-
-// export async function fetchInvoiceById(id: string) {
-//     noStore();
-//     try {
-//         const data = await sql<InvoiceForm>`
-//         SELECT
-//           invoices.id,
-//           invoices.customer_id,
-//           invoices.amount,
-//           invoices.status
-//         FROM invoices
-//         WHERE invoices.id = ${id};
-//       `;
-
-//         const invoice = data.rows.map((invoice) => ({
-//             ...invoice,
-//             // Convert amount from cents to dollars
-//             amount: invoice.amount / 100,
-//         }));
-
-//         return invoice[0];
-//     } catch (error) {
-//         console.error('Database Error:', error);
-//         throw new Error('Failed to fetch invoice.');
-//     }
-// }
-
-// export async function fetchCustomers() {
-//     try {
-//         const data = await sql<CustomerField>`
-//         SELECT
-//           id,
-//           name
-//         FROM customers
-//         ORDER BY name ASC
-//       `;
-
-//         const customers = data.rows;
-//         return customers;
-//     } catch (err) {
-//         console.error('Database Error:', err);
-//         throw new Error('Failed to fetch all customers.');
-//     }
-// }
-
-// export async function fetchFilteredCustomers(query: string) {
-//     try {
-//         const data = await sql<CustomersTable>`
-//           SELECT
-//             customers.id,
-//             customers.name,
-//             customers.email,
-//             customers.image_url,
-//             COUNT(invoices.id) AS total_invoices,
-//             SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-//             SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-//           FROM customers
-//           LEFT JOIN invoices ON customers.id = invoices.customer_id
-//           WHERE
-//             customers.name ILIKE ${`%${query}%`} OR
-//           customers.email ILIKE ${`%${query}%`}
-//           GROUP BY customers.id, customers.name, customers.email, customers.image_url
-//           ORDER BY customers.name ASC
-//         `;
-
-//         const customers = data.rows.map((customer) => ({
-//             ...customer,
-//             total_pending: formatCurrency(customer.total_pending),
-//             total_paid: formatCurrency(customer.total_paid),
-//         }));
-
-//         return customers;
-//     } catch (err) {
-//         console.error('Database Error:', err);
-//         throw new Error('Failed to fetch customer table.');
-//     }
-// }
-
-// export async function getUser(email: string) {
-//     try {
-//         const user = await sql`SELECT * FROM users WHERE email=${email}`;
-//         return user.rows[0] as User;
-//     } catch (error) {
-//         console.error('Failed to fetch user:', error);
-//         throw new Error('Failed to fetch user.');
+//         throw new Error('Failed to add asset to favorites.');
 //     }
 // }
