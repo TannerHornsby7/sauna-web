@@ -53,9 +53,9 @@ export default function Filters() {
             url_filter_set.add(filter);
         }
         // join the set into a string
-        const new_filter_s = Array.from(url_filter_set).join('.');
+        let new_filter_s = Array.from(url_filter_set).join('.');
         // remove the first charcter of the string
-        new_filter_s.slice(1);
+        new_filter_s = new_filter_s.slice(1);
         // set the filter
         newParams.set('filter', new_filter_s);
         // replace the url
