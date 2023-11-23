@@ -58,7 +58,7 @@ const ShoppingCartBtn: React.FC<ShoppingCartBtnProps> = ({ cartItems, onOpenModa
   return (
     <div 
       onClick={onOpenModal} 
-      className="h-10 w-12 grid  place-content-center cursor-pointer rounded-sm relative text-lg bg-primary-olivine text-primary-eerie_black ease-in-out transition-all duration-300 hover:text-white"
+      className="h-10 w-12 grid place-content-center cursor-pointer rounded-sm relative text-lg bg-primary-olivine text-primary-eerie_black ease-in-out transition-all duration-300 hover:text-white"
     >
       <ShoppingCartIcon className="h-6 w-6" />
       {itemCount > 0 && (
