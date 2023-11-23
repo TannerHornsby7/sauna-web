@@ -29,6 +29,7 @@ const CartModal: React.FC<CartModalProps> = ({ cartItems, isOpen, onClose }) => 
         {cartItems.length === 0 ? (
           <p>Your cart is empty.</p>
         ) : (
+          <>
           <ul>
             {cartItems.map((item, index) => (
               <li key={index} className="mb-2 flex justify-between">
@@ -39,6 +40,14 @@ const CartModal: React.FC<CartModalProps> = ({ cartItems, isOpen, onClose }) => 
               </li>
             ))}
           </ul>
+          <div>
+            <hr className="my-2" />
+            <div className="flex justify-between">
+              <span className="font-semibold">Total</span>
+              <span className="font-semibold">${cartItems.reduce((total, item) => total + item.avg_price * item.quantity, 0).toFixed(2)}</span>
+            </div>
+          </div>
+          </>
         )}
         <button
           onClick={() => onClose()}
