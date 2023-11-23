@@ -9,12 +9,26 @@ import { toUrlSlug } from '@/lib/utils';
 import Image from 'next/image';
 import clsx from 'clsx';
 import { useState } from 'react';
+import React from 'react';
+import { Asset } from '@/types';
+
+const addToCart = (asset: Asset) => {
+    console.log("adding to cart:", asset);
+}
+
+type ProductCardProps = {
+    key: string;
+    asset: Asset;
+    favorite: boolean;
+};
 // import { addToFavorites } from '@/lib/data';
 const addToFavorites = (name: string) => {
     console.log(name);
 }
-
-export default function Component({ name, image_url, price, favorite }: { name: string, image_url: string, price: number, favorite: boolean }) {
+// make sure component fits this call:
+{/* <MarketCard key={asset.id} asset={asset} favorite={false} /> */ }
+export default function MarketCard({ key, asset, favorite }: ProductCardProps) {
+    const { id, name, avg_price, image } = asset;
     const [hoverCard, setHoverCard] = useState(false);
 
     const addToFavorites = () => {
@@ -26,9 +40,9 @@ export default function Component({ name, image_url, price, favorite }: { name: 
             className="w-[150px] h-[250px] grid hover:bg-primary-eerie_black-600 bg-primary-eerie_black-500 border-none rounded-lg shadow-lg text-white ease-in-out transition-all duration-300"
             onMouseEnter={() => setHoverCard(true)}
             onMouseLeave={() => setHoverCard(false)}
-            >
+        >
             <Image
-                src={image_url}
+                src={image}
                 alt={name}
                 width={200}
                 height={200}
@@ -39,7 +53,7 @@ export default function Component({ name, image_url, price, favorite }: { name: 
                 </p>
                 <div className="w-full flex justify-between align-middle pt-2">
                     <p className="text-primary-olivine">
-                        ${price}
+                        ${avg_price}
                     </p>
                     <button
                         formAction={addToFavorites}
@@ -59,12 +73,18 @@ export default function Component({ name, image_url, price, favorite }: { name: 
                 </div>
             </div>
             <div className="h-min flex p-6 pt-0 items-center justify-between ">
-                <Link
+                <button
+                    onClick={() => addToCart(asset)}
+                    className='text-primary-ebony-300 hover:text-primary-olivine grid place-items-center w-full rounded-sm bg-primary-ebony-200 hover:bg-primary-ebony-200 px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 ease-in-out transition-all duration-300'
+                >
+                    <ShoppingCartIcon className="w-6" />
+                </button>
+                {/* <Link
                     href={`/market/${toUrlSlug(name)}`}
                     className='text-primary-ebony-300 hover:text-primary-olivine grid place-items-center w-full rounded-sm bg-primary-ebony-200 hover:bg-primary-ebony-200 px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 ease-in-out transition-all duration-300'
                 >
                     <ShoppingCartIcon className="w-6" />
-                </Link>
+                </Link> */}
             </div>
         </div>
     );

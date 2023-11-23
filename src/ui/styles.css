@@ -1,12 +1,5 @@
-/* create a class, flowgrid, that uses autominmax to  */
-/* create a grid that will flow with the size of the window */
-/* create a card variable that specifies the width and height of the card */
-/* card width is 150px and height is 250px */
-
 /* --card-width: 44px;
 --card-height: 60px; */
-
-
 
 .flowgrid {
   display: grid;

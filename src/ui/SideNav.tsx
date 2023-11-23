@@ -1,17 +1,4 @@
-import Link from 'next/link';
 import NavLinks from '@/ui/market/nav-links';
-// import AcmeLogo from '@/app/ui/acme-logo';
-import SaunaLogo from '@/ui/SaunaLogo';
-import { PowerIcon } from '@heroicons/react/24/outline';
-// import { signOut } from 'next-auth/react';
-// import { time } from 'console';
-// import { signOut } from '@/auth';
-async function signOut() {
-    // wait 2 seconds
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log('signing out')
-  return;
-}
 
 export default function SideNav() {
   return (

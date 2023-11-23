@@ -1,18 +1,18 @@
 // create a basic market page
 import React from 'react';
 import Pagination from '@/ui/market/Pagination';
-import Search from '@/ui/search';
+import Search from '@/ui/Search';
 import Table from '@/ui/market/Table';
-import { lusitana } from '@/ui/fonts';
+import ShoppingCartBtn from '@/ui/market/Cart';
 import { ListingsTableSkeleton } from '@/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchAssetPages } from '@/lib/data';
-import SortDial from '@/ui/market/SortDial';
+import DropDown from '@/ui/DropDown';
+
 import {
     PowerIcon,
     HeartIcon,
 } from '@heroicons/react/24/outline';
-import DropDown from '@/ui/DropDown';
 import '@/ui/styles.css';
 
 export default async function Page({
@@ -31,8 +31,8 @@ export default async function Page({
 
     return (
         <div className="w-full p-4 -mt-4">
-            <div className="mt-4 flex md:mt-8">
-                <div className="flex place-items-center">
+            <div className="flex justify-between mt-4 md:mt-8">
+                <div className='flex place-items-center'>
                     <div className='flex justify-center text-primary-ebony-500'>
                         <PowerIcon className="mr-2 h-5 w-5 text-primary-olivine" />
                         |
@@ -41,7 +41,7 @@ export default async function Page({
                     <Search placeholder="Search assets..." />
                     <DropDown />
                 </div>
-                {/* add a cart that keeps track of added items */}
+                <ShoppingCartBtn />
             </div>
             <Suspense key={query + currentPage + sort} fallback={<ListingsTableSkeleton />}>
                 <Table query={query} currentPage={currentPage} sort={sort} />
