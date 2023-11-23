@@ -11,10 +11,7 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import React from 'react';
 import { Asset } from '@/types';
-
-const addToCart = (asset: Asset) => {
-    console.log("adding to cart:", asset);
-}
+import { useCart } from '@/ui/market/CartContext';
 
 type ProductCardProps = {
     key: string;
@@ -30,6 +27,22 @@ const addToFavorites = (name: string) => {
 export default function MarketCard({ key, asset, favorite }: ProductCardProps) {
     const { id, name, avg_price, image } = asset;
     const [hoverCard, setHoverCard] = useState(false);
+    const { cartItems, addToCart, removeFromCart } = useCart();
+
+    const handleAddToCart = () => {
+        console.log('adding to cart', asset)
+        addToCart(asset);
+    }
+
+    const handleRemoveFromCart = () => {
+        console.log('removing from cart', asset)
+        removeFromCart(asset);
+    }
+
+    const getQuantity = (asset: Asset) => {
+        const cartItem = cartItems.find(cartItem => cartItem.id === asset.id);
+        return cartItem ? cartItem.quantity : 0;
+    }
 
     const addToFavorites = () => {
         console.log(name);
@@ -37,7 +50,7 @@ export default function MarketCard({ key, asset, favorite }: ProductCardProps) {
 
     return (
         <div
-            className="w-[150px] h-[250px] grid hover:bg-primary-eerie_black-600 bg-primary-eerie_black-500 border-none rounded-lg shadow-lg text-white ease-in-out transition-all duration-300"
+            className="relative z-0 w-[150px] h-[250px] grid hover:bg-primary-eerie_black-600 bg-primary-eerie_black-500 border-none rounded-lg shadow-lg text-white ease-in-out transition-all duration-300"
             onMouseEnter={() => setHoverCard(true)}
             onMouseLeave={() => setHoverCard(false)}
         >
@@ -74,11 +87,27 @@ export default function MarketCard({ key, asset, favorite }: ProductCardProps) {
             </div>
             <div className="h-min flex p-6 pt-0 items-center justify-between ">
                 <button
-                    onClick={() => addToCart(asset)}
-                    className='text-primary-ebony-300 hover:text-primary-olivine grid place-items-center w-full rounded-sm bg-primary-ebony-200 hover:bg-primary-ebony-200 px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 ease-in-out transition-all duration-300'
+                    onClick={handleAddToCart}
+                    className='h-10 text-primary-ebony-300 hover:text-primary-olivine grid place-items-center w-full rounded-sm bg-primary-ebony-200 hover:bg-primary-ebony-200 px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 ease-in-out transition-all duration-300'
                 >
                     <ShoppingCartIcon className="w-6" />
                 </button>
+                {/* display the quantity of the item wit a plus and minus button to add or remove from cart if the quantity is non-zero */}     
+                {getQuantity(asset) > 0 && (<span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">{getQuantity(asset)}</span> )}            
+                {getQuantity(asset) > 0 && (<div className="h-10 flex flex-col justify-between w-full">
+                    <button
+                        onClick={() => addToCart(asset)}
+                        className="bg-primary-olivine hover:bg-primary-olivine-300 text-white text-sm font-bold rounded"
+                    >
+                        +
+                    </button>
+                    <button
+                        onClick={handleRemoveFromCart}
+                        className="bg-primary-olivine hover:bg-primary-olivine-300 text-white text-sm font-bold rounded"
+                    >
+                        -
+                    </button>
+                </div>)}
                 {/* <Link
                     href={`/market/${toUrlSlug(name)}`}
                     className='text-primary-ebony-300 hover:text-primary-olivine grid place-items-center w-full rounded-sm bg-primary-ebony-200 hover:bg-primary-ebony-200 px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 ease-in-out transition-all duration-300'

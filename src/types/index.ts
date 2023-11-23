@@ -32,6 +32,10 @@ export interface Transaction {
     createdAt: Date
 }
 
+export type CartAsset = Asset & {
+    quantity: number;
+};
+
 export type CartProps = {
-    cartItems: Asset[];
+    cartItems: CartAsset[];
 };

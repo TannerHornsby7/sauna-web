@@ -8,6 +8,7 @@ import { ListingsTableSkeleton } from '@/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchAssetPages } from '@/lib/data';
 import DropDown from '@/ui/DropDown';
+import { CartProvider } from '@/ui/market/CartContext';
 
 import {
     PowerIcon,
@@ -30,25 +31,27 @@ export default async function Page({
     const totalPages = await fetchAssetPages(query);
 
     return (
-        <div className="w-full p-4 -mt-4">
-            <div className="flex justify-between mt-4 md:mt-8">
-                <div className='flex place-items-center'>
-                    <div className='flex justify-center text-primary-ebony-500'>
-                        <PowerIcon className="mr-2 h-5 w-5 text-primary-olivine" />
-                        |
-                        <HeartIcon className="mx-2 h-5 w-5 text-primary-olivine" />
+        <CartProvider>
+            <div className="w-full p-4 -mt-4">
+                <div className="flex justify-between mt-4 md:mt-8">
+                    <div className='flex place-items-center'>
+                        <div className='flex justify-center text-primary-ebony-500'>
+                            <PowerIcon className="mr-2 h-5 w-5 text-primary-olivine" />
+                            |
+                            <HeartIcon className="mx-2 h-5 w-5 text-primary-olivine" />
+                        </div>
+                        <Search placeholder="Search assets..." />
+                        <DropDown />
                     </div>
-                    <Search placeholder="Search assets..." />
-                    <DropDown />
+                    <ShoppingCartBtn />
                 </div>
-                <ShoppingCartBtn />
+                <Suspense key={query + currentPage + sort} fallback={<ListingsTableSkeleton />}>
+                    <Table query={query} currentPage={currentPage} sort={sort} />
+                </Suspense>
+                <div className="mt-5 flex w-full justify-center">
+                    <Pagination totalPages={totalPages} />
+                </div>
             </div>
-            <Suspense key={query + currentPage + sort} fallback={<ListingsTableSkeleton />}>
-                <Table query={query} currentPage={currentPage} sort={sort} />
-            </Suspense>
-            <div className="mt-5 flex w-full justify-center">
-                <Pagination totalPages={totalPages} />
-            </div>
-        </div>
+        </CartProvider>
     );
 }
