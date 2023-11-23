@@ -28,14 +28,14 @@ const sorts = [
     name: 'Price',
     icon: 'CurrencyDollarIcon',
   },
-  {
-    name: 'Float',
-    icon: 'CalculatorIcon',
-  },
-  {
-    name: 'Date',
-    icon: 'CalendarIcon',
-  },
+  // {
+  //   name: 'Float',
+  //   icon: 'CalculatorIcon',
+  // },
+  // {
+  //   name: 'Date',
+  //   icon: 'CalendarIcon',
+  // },
 ]
 
 // sorts should now be doubled in size to include the increasing and decreasing icons

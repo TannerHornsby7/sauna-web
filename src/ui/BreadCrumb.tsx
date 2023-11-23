@@ -7,7 +7,6 @@ import { usePathname } from 'next/navigation';
 export default function Component() {
     // get the current url using next/navigation
     const url = usePathname();
-    console.log(url)
     let home = false
     if (url == '/') {
         home = true
@@ -27,7 +26,6 @@ export default function Component() {
                         return ''
                     }
                     run += `/${item}`
-                    console.log(run)
                     return <Breadcrumb.Item className="italic capitalize" href={run} key={index}>{item}</Breadcrumb.Item>
                 })}
         </Breadcrumb>

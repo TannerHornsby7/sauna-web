@@ -12,18 +12,6 @@ const queryToORM: {
 
 const prisma = new PrismaClient();
 
-// export default async function prismaExample() {
-//   const newUser = await prisma.user.create({
-//     data: {
-//       name: 'Elliott',
-//       email: 'xelliottx@example-user.com',
-//     },
-//   });
-
-//   const users = await prisma.user.findMany();
-// }
-
-// fetch all assets
 export async function fetchAssets() {
     noStore();
     try {
@@ -31,6 +19,8 @@ export async function fetchAssets() {
         return assets;
     } catch (error) {
         console.error('Database Error:', error);
+        // close the database connection
+        await prisma.$disconnect();
         throw new Error('Failed to fetch assets.');
     }
 }
@@ -41,6 +31,7 @@ export async function fetchFilteredAssets(
     query: string,
     currentPage: number,
     sort: string,
+    filters: string,
 ) {
     noStore();
     let sortColumn = 'name';
@@ -50,6 +41,7 @@ export async function fetchFilteredAssets(
         sortColumn = queryToORM[sort.split('.')[0].toLowerCase() || 'price'];
         sortOrder = sort.split('.')[1].toLowerCase();
     }
+
     try {
         const assets = prisma.asset.findMany({
             where: {
@@ -76,8 +68,9 @@ export async function fetchFilteredAssets(
     }
     catch (error) {
         console.error('Database Error:', error);
+        // close the database connection
+        await prisma.$disconnect();
         throw new Error('Failed to fetch assets.');
-
     }
 }
 
@@ -107,6 +100,8 @@ export async function fetchAssetPages(query: string) {
         return totalPages;
     } catch (error) {
         console.error('Database Error:', error);
+        // close the database connection
+        await prisma.$disconnect();
         throw new Error('Failed to fetch total number of assets.');
     }
 }

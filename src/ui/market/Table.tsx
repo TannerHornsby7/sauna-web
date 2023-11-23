@@ -8,12 +8,14 @@ export default async function AssetsTable({
   query,
   currentPage,
   sort,
+  filters,
 }: {
   query: string;
   currentPage: number;
   sort: string;
+  filters: string;
 }) {
-  const assets = await fetchFilteredAssets(query, currentPage, sort);
+  const assets = await fetchFilteredAssets(query, currentPage, sort, filters);
   // if assets isn't a list, return an empty list
   if (!Array.isArray(assets)) {
     throw new Error('Assets is not a list');

@@ -54,6 +54,8 @@ export default function Filters() {
         }
         // join the set into a string
         const new_filter_s = Array.from(url_filter_set).join('.');
+        // remove the first charcter of the string
+        new_filter_s.slice(1);
         // set the filter
         newParams.set('filter', new_filter_s);
         // replace the url
@@ -83,7 +85,8 @@ export default function Filters() {
                 }}>{
                     filters.map((f) => (
                         <button
-                            onClick={updateFilters(f.name)}
+                            key={f.name}
+                            onClick={updateFilters(f.name.toLowerCase())}
                             className='flex text-primary-olivine-300 w-full align-middle  hover:bg-primary-eerie_black-300 hover:text-white ease-in-out transition-all duration-150'
                             style={{
                                 display: 'flex',

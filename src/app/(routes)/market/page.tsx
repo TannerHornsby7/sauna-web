@@ -15,6 +15,7 @@ import {
     HeartIcon,
 } from '@heroicons/react/24/outline';
 import '@/ui/styles.css';
+import Filters from '@/ui/Filter';
 
 export default async function Page({
     searchParams,
@@ -23,10 +24,12 @@ export default async function Page({
         query?: string;
         page?: string;
         sort?: string;
+        filters?: string;
     };
 }) {
     const query = searchParams?.query || '';
     const sort = searchParams?.sort || '';
+    const filters = searchParams?.filters || '';
     const currentPage = parseInt(searchParams?.page || '1');
     const totalPages = await fetchAssetPages(query);
 
@@ -44,8 +47,8 @@ export default async function Page({
                     </div>
                     <ShoppingCartBtn />
                 </div>
-                <Suspense key={query + currentPage + sort} fallback={<ListingsTableSkeleton />}>
-                    <Table query={query} currentPage={currentPage} sort={sort} />
+                <Suspense key={query + currentPage + sort + filters} fallback={<ListingsTableSkeleton />}>
+                    <Table query={query} currentPage={currentPage} sort={sort} filters={filters} />
                 </Suspense>
                 <div className="mt-5 flex w-full justify-center">
                     <Pagination totalPages={totalPages} />
