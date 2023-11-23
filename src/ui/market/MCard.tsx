@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    EyeIcon as ViewIcon,
     ShoppingCartIcon,
     HeartIcon as FavoriteIcon,
 } from '@heroicons/react/24/solid';
@@ -68,6 +69,20 @@ export default function MarketCard({ key, asset, favorite }: ProductCardProps) {
                     <p className="text-primary-olivine">
                         ${avg_price}
                     </p>
+                    <Link
+                        href={`/market/${toUrlSlug(name)}`}
+                        aria-label="View Asset Details"
+                        title='View Asset Details'
+                        className={clsx(
+                            'grid place-items-center w-5 h-5 hover:text-blue-950 ease-in-out transition-all duration-300',
+                            {
+                                'text-white': hoverCard && !favorite,
+                                'bg-opacity-0 hidden': !hoverCard,
+                            },
+                        )}
+                    >
+                        <ViewIcon className="w-5" />
+                    </Link>
                     <button
                         formAction={addToFavorites}
                         aria-label="Add to favorites"
@@ -92,8 +107,7 @@ export default function MarketCard({ key, asset, favorite }: ProductCardProps) {
                 >
                     <ShoppingCartIcon className="w-6" />
                 </button>
-                {/* display the quantity of the item wit a plus and minus button to add or remove from cart if the quantity is non-zero */}     
-                {getQuantity(asset) > 0 && (<span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">{getQuantity(asset)}</span> )}            
+                {getQuantity(asset) > 0 && (<span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">{getQuantity(asset)}</span>)}
                 {getQuantity(asset) > 0 && (<div className="h-10 flex flex-col justify-between w-full">
                     <button
                         onClick={() => addToCart(asset)}
@@ -108,12 +122,7 @@ export default function MarketCard({ key, asset, favorite }: ProductCardProps) {
                         -
                     </button>
                 </div>)}
-                {/* <Link
-                    href={`/market/${toUrlSlug(name)}`}
-                    className='text-primary-ebony-300 hover:text-primary-olivine grid place-items-center w-full rounded-sm bg-primary-ebony-200 hover:bg-primary-ebony-200 px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 ease-in-out transition-all duration-300'
-                >
-                    <ShoppingCartIcon className="w-6" />
-                </Link> */}
+
             </div>
         </div>
     );

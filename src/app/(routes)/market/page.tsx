@@ -9,9 +9,9 @@ import { Suspense } from 'react';
 import { fetchAssetPages } from '@/lib/data';
 import DropDown from '@/ui/DropDown';
 import { CartProvider } from '@/ui/market/CartContext';
-
+import Filter from '@/ui/Filter';
+// import filter icon
 import {
-    PowerIcon,
     HeartIcon,
 } from '@heroicons/react/24/outline';
 import '@/ui/styles.css';
@@ -36,9 +36,8 @@ export default async function Page({
                 <div className="flex justify-between mt-4 md:mt-8">
                     <div className='flex place-items-center'>
                         <div className='flex justify-center text-primary-ebony-500'>
-                            <PowerIcon className="mr-2 h-5 w-5 text-primary-olivine" />
-                            |
-                            <HeartIcon className="mx-2 h-5 w-5 text-primary-olivine" />
+                            <Filter />
+                            {/* <HeartIcon className="mx-2 h-5 w-5 text-primary-olivine" /> */}
                         </div>
                         <Search placeholder="Search assets..." />
                         <DropDown />
