@@ -107,7 +107,7 @@ export default function MarketCard({ key, asset, favorite }: ProductCardProps) {
                 >
                     <ShoppingCartIcon className="w-6" />
                 </button>
-                {getQuantity(asset) > 0 && (<span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">{getQuantity(asset)}</span>)}
+                {getQuantity(asset) > 0 && (<span className="absolute -top-2 -left-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">{getQuantity(asset)}</span>)}
                 {getQuantity(asset) > 0 && (<div className="h-10 flex flex-col justify-between w-full">
                     <button
                         onClick={() => addToCart(asset)}
