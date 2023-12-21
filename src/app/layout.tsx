@@ -7,6 +7,7 @@ import Foot from '@/ui/Footer'
 import { bg_img } from '@/lib/assets'
 // import the auth provider
 import { AuthProvider } from '@/lib/useAuth';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,6 +41,7 @@ export default function RootLayout({
           {children}
           <Foot />
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   )
