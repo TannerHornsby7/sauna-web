@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import SteamOpenID from '@/lib/steam-openid';
-import {UserContext, UserProvider} from '@/lib/useUser';
 import config from '@/lib/steam-config';
 
 // we store the steamid in the browser as a cookie
@@ -10,7 +9,7 @@ import config from '@/lib/steam-config';
 export async function GET(req: NextRequest) {
   // Check if the user is already logged in
   // by checking the cookies of the request
-  if (req.cookies.get('steamid')) {
+  if (req.cookies.get('user_info')) {
     // Redirect the user to the homepage
     return NextResponse.redirect('/');
   }

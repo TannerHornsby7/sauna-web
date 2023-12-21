@@ -5,6 +5,8 @@ import Nav from '@/ui/Nav'
 import BreadCrumb from '@/ui/BreadCrumb'
 import Foot from '@/ui/Footer'
 import { bg_img } from '@/lib/assets'
+// import the auth provider
+import { AuthProvider } from '@/lib/useAuth';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -32,10 +34,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`flex flex-col ` + inter.className} style={backgroundStyle}>
-        <Nav />
-        <BreadCrumb />
-        {children}
-        <Foot />
+        <AuthProvider>
+          <Nav />
+          <BreadCrumb />
+          {children}
+          <Foot />
+        </AuthProvider>
       </body>
     </html>
   )

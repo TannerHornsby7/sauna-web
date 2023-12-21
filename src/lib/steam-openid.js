@@ -35,19 +35,25 @@ class SteamOpenID {
     //   // throw new Error('Invalid return_to');
     // }
     // return steamId which is the last part of the claimed identity
-    console.log(query)
-    const claimedId = query['openid.identity'];
+    console.log('query be like ', query)
+    // get the identity from the query, which is URLSearchParams
+    // make sure you are able to access it with keys
+    // unwrap the query
+    query = Object.fromEntries(query)
+    const claimedId = query['openid.claimed_id'];
     console.log(claimedId)
     return claimedId.split('/').pop();
   }
 
   async getUserInfo(steamId) {
     const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${this.apiKey}&steamids=${steamId}`;
-    const response = await axios.get(url);
-    console.log(response)
-    const { personaname, avatarfull } = response.data.response.players[0];
-    console.log(personaname, avatarfull)
-    return { personaname, avatarfull };
+    try {
+      const response = await axios.get(url);
+      return response.data.response.players[0]
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error getting user info');
+    }
   }
 
   async getUserInventory(steamId) {

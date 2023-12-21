@@ -6,39 +6,54 @@ import { Button, Checkbox, Label, Modal, TextInput } from 'flowbite-react';
 import { useRef, useState } from 'react';
 import LogInBtn from '@/ui/login/btn';
 import Link from 'next/link';
+import { useAuth, AuthContextType, User } from '@/lib/useAuth';
+import Image from 'next/image';
+import { CircularProgress } from '@mui/material';
+/*
+interface User {
+    steamId: string;
+    name?: string;
+    pictureUrl?: string;
+    // Add other user properties as needed
+}
+*/
 
 // login or account takes in an object with a userStatus parameter that is a string, and returns a login button or an account button
-export function LoginorAccount({ userStatus }: { userStatus: string }) {
-    if (userStatus == 'logged out') {
+export function LoginorAccount({ user }: { user: User | null | undefined }) {
+    // get logout function from useAuth
+    const { logout } = useAuth() as AuthContextType
+    if (user && user.steamId == 'loading') {
+        return <CircularProgress color="inherit" />
+    }
+    if (!user) {
         return <LogInBtn />
     }
-    else if (userStatus == 'logging in') {
-        return null
-    }
+    
     return (
         <div className="flex">
             <Dropdown
                 arrowIcon={false}
                 inline
                 label={
-                    <Avatar alt="User settings" img="https://flowbite.com/docs/images/people/profile-picture-5.jpg" rounded />
+                    <Image className='rounded-full' height={40} width={40} alt="User settings" src={user.pictureUrl ? user.pictureUrl : ''} />
                 }
             >
                 <Dropdown.Header>
-                    <span className="block text-sm">Bonnie Green</span>
-                    <span className="block truncate text-sm font-medium">name@gmail.com</span>
+                    <span className="block text-sm">{user.name}</span>
+                    <span className='block text-xs text-primary-olivine-400'>{user.steamId}</span>
+                    {/* <span className="block truncate text-sm font-medium">name@gmail.com</span> */}
                 </Dropdown.Header>
                 <Dropdown.Item>Dashboard</Dropdown.Item>
                 <Dropdown.Item>Settings</Dropdown.Item>
                 <Dropdown.Item>Earnings</Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item onClick={() => { console.log("log-out") }}>Sign out</Dropdown.Item>
+                <Dropdown.Item onClick={() => { logout() }}>Sign out</Dropdown.Item>
             </Dropdown>
         </div>)
 }
 
 export default function Component() {
-    const [userStatus, setUserStatus] = useState('logged out')
+    const user = useAuth()?.user
 
     // add its proper types
     let hm = {
@@ -53,10 +68,6 @@ export default function Component() {
     // set home with url
     if (url == '/') {
         home = true
-    }
-
-    if (url == 'login') {
-        setUserStatus('logging in')
     }
 
     return (
@@ -83,7 +94,7 @@ export default function Component() {
                         return <Link className={`ease-in-out transition-all duration-300 hover:text-primary-olivine-600 md:pt-2 ${url == item ? ' text-primary-olivine' : 'text-primary-olivine-400'}`} href={item} key={index}>{hm[item]}</Link>
                     })
                 }
-                <LoginorAccount userStatus={userStatus} />
+                <LoginorAccount user={user} />
             </Navbar.Collapse>
         </Navbar>
     );
