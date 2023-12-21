@@ -12,7 +12,7 @@ export function middleware(req: NextRequest) {
 
       // Create a response and set the cookie
       const response = NextResponse.redirect(`${origin}/soft-login`);
-      if (!cookie || cookie === 'undefined') {
+      if (!cookie || cookie === undefined) {
         return response;
       }
     }
