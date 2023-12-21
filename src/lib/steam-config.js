@@ -7,15 +7,15 @@ let host = process.env.HOST;
 
 // if we are in dev mode, use localhost
 if (process.env.NODE_ENV === 'development') {
-    host = 'http://localhost:3000';
+    host = 'localhost:3000';
 }
 
 console.log('process.env is ', process.env);
 console.log('host is', host);
 
 const config = {
-    returnURL: host + '/validate',
-    realm: host,
+    returnURL: 'http://' + host + '/validate',
+    realm: 'http://' + host,
     apiKey: apiKey,
 };
 
