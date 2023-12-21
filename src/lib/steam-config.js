@@ -2,7 +2,7 @@
 // get the api key from .env
 require('dotenv').config();
 const apiKey = process.env.STEAM_API_KEY;
-const host = process.env.HOST;
+let host = process.env.HOST;
 
 // if we are in dev mode, use localhost
 if (process.env.NODE_ENV === 'development') {
