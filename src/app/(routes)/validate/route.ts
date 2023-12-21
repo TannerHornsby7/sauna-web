@@ -6,17 +6,18 @@ export async function GET(req: NextRequest) {
     const steamOpenID = new SteamOpenID(steamConfig);
     let query = req.nextUrl.searchParams; // the query
     let steamID = steamOpenID.verify(query);
+    const origin = req.nextUrl.origin;
+
 
     if (!steamID) {
         console.log('Could not verify steamID');
-        return NextResponse.redirect('https://www.google.com');
+        return NextResponse.redirect(`${origin}/soft-login`);
     }
 
     const userInfo = await steamOpenID.getUserInfo(steamID);
     console.log('userInfo is', userInfo);
 
     // Determine the origin (protocol and host) from the incoming request
-    const origin = req.nextUrl.origin;
     
     // Create a response and set the cookie
     const response = NextResponse.redirect(`${origin}/market`);
