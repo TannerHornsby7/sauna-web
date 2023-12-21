@@ -1,16 +1,14 @@
 // needs to be implemented
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
-import { PrismaClient } from '@prisma/client';
-// import the list of assets from the JSON file
+// Some API or utility file
+import prisma from './prismaClient';
 
 const queryToORM: {
     [key: string]: string;
 } = {
     'price': 'avg_price',
 }
-
-const prisma = new PrismaClient();
 
 export async function fetchAssets() {
     noStore();
