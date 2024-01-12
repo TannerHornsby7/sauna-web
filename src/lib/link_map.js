@@ -16,7 +16,7 @@ const link_map = {
     'Instagram': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     'Github': 'https://github.com/TannerHornsby7/sauna-web',
     'Video': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    'Survey': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    'Survey': 'https://forms.gle/NoMAhsTmPbQGxfhv7',
     'Reddit': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     'CNVC': 'https://polsky.uchicago.edu/wp-content/uploads/2021/09/Polsky_logo_stack-1.png',
     'CNVC Website': 'https://polsky.uchicago.edu/programs-events/new-venture-challenge/college-new-venture-challenge/',

@@ -94,7 +94,7 @@ export default function Component() {
                         return <Link className={`ease-in-out transition-all duration-300 hover:text-primary-olivine-600 md:pt-2 ${url == item ? ' text-primary-olivine' : 'text-primary-olivine-400'}`} href={item} key={index}>{hm[item]}</Link>
                     })
                 }
-                <LoginorAccount user={user} />
+                {/* <LoginorAccount user={user} /> */}
             </Navbar.Collapse>
         </Navbar>
     );
