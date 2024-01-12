@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
     let query = req.nextUrl.searchParams; // the query
     let steamID = steamOpenID.verify(query);
     const origin = req.nextUrl.origin;
+    console.log('parsed response successfully', steamID, origin)
 
 
     if (!steamID) {
@@ -45,5 +46,6 @@ export async function GET(req: NextRequest) {
         secure: true, // Optional, but recommended
     });
 
+    console.log('response is', response)
     return response;
 }
